@@ -1,0 +1,5 @@
+things to include -
+
+next auth
+recoil
+prisma and postgres
