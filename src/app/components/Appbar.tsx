@@ -8,8 +8,8 @@ export default function Appbar(){
 
     return(
         <div>
-            <button onClick={()=>signIn()}>Login</button>
-            <button onClick={()=>signOut()}>Logout</button>
+            {!session.data?.user?.name ? <button onClick={()=>signIn()}>Login</button> : null}
+            {session.data?.user?.name ? <button onClick={()=>signOut()}>Logout</button> : null}
             {JSON.stringify(session)}
         </div>
     )

@@ -1,8 +1,9 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-
+import prisma from "@/prisma/index";
+import { AdapterUser } from "next-auth/adapters";
 
 export const authOptions:AuthOptions={
     providers:[
@@ -13,12 +14,17 @@ export const authOptions:AuthOptions={
           password: { label: "Password", type: "password", placeholder:"Password" }
         },
         async authorize(credentials, req) {
-          const user = { id: "1", name: "J Smith", email: "jsmith@example.com" }
-
-          //add db logic
+          const user=await prisma.user.findUnique({
+            where:{
+              email:credentials?.email,
+            }
+          })
     
           if (user) {
-            return user
+            if(user.password===credentials?.password){
+              return user
+            }
+            return null
           } else {
             return null
           }
@@ -36,8 +42,9 @@ export const authOptions:AuthOptions={
     secret:process.env.NEXTAUTH_SECRET,
     callbacks:{
       async jwt({ token, user, account, profile, isNewUser }) {
-        token.id=user.id
-
+        if(user){
+          token.id=user.id
+        }
         return token
       },
       async session({ session, user, token }) {
