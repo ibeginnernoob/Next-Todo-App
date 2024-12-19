@@ -54,6 +54,7 @@ model User {
   social        Json?
   accounts      Account[]
   sessions      Session[]
+  todos         Todo[]
 }
 
 model VerificationRequest {
@@ -63,4 +64,19 @@ model VerificationRequest {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Todo{
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  createdAt   DateTime
+  status      TodoStatus @default(InProgress)
+  userId      String
+  user        User    @relation(references: [id],fields: [userId])
+}
+
+enum TodoStatus {
+  Completed
+  InProgress
 }

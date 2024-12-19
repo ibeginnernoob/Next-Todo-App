@@ -3,12 +3,12 @@
 import prisma from "@/prisma/index";
 
 type signupDetails={
-    username:string,
+    name:string,
     email:string,
     password:string
 }
 
-export default async function signup({username,email,password}:signupDetails){
+export default async function signup({name,email,password}:signupDetails){
     try{
         const user=await prisma.user.findUnique({
             where:{
@@ -20,7 +20,7 @@ export default async function signup({username,email,password}:signupDetails){
         }
         await prisma.user.create({
             data:{
-                username,
+                name,
                 email,
                 password
             }

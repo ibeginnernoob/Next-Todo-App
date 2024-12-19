@@ -26,10 +26,10 @@ export const authOptions:AuthOptions={
         });
       
         if (user && user.password === credentials.password) {
-          return user; // Return user if authenticated
+          return user;
         }
       
-        return null; // Return null if authentication fails
+        return null;
       }      
     }),
     GoogleProvider({
@@ -43,17 +43,15 @@ export const authOptions:AuthOptions={
   ],
   secret:process.env.NEXTAUTH_SECRET,
   callbacks:{
-    async jwt({ token, user, account, profile }) {
-      if(user){
-        token.id=user.id
+    async session({ session, user }) {
+      const updatedSession={
+        ...session,
+        user:{
+          ...session.user,
+          id:user.id
+        }
       }
-      console.log(token, user, account, profile)
-      return token
-    },
-    async session({ session, user, token }) {
-      console.log(session,user,token)
-
-      return session
+      return updatedSession
     }
   },
   pages:{
